@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/mertyakan/gitops
-    path: apps/appsets/elastic.yaml
+    path: ./apps/appsets/elastic.yaml
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
