@@ -49,8 +49,6 @@ spec:
               operator: "Equal"
               value: "spot"
               effect: "NoSchedule"
-          extraRoles:
-            - remote_cluster_client
 
         data:
           replicaCount: 3
@@ -63,7 +61,15 @@ spec:
               effect: "NoSchedule"
 
         ingest:
-          enabled: false
+          enabled: true
+          nodeSelector:
+            kubernetes.azure.com/scalesetpriority: spot
+          tolerations:
+            - key: "kubernetes.azure.com/scalesetpriority"
+              operator: "Equal"
+              value: "spot"
+              effect: "NoSchedule"
+
 
         volumePermissions:
           enabled: true

@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: fluentd
+  name: fluent-bit
   namespace: argocd
 spec:
   project: default
@@ -16,39 +16,61 @@ spec:
       - CreateNamespace=true
   source:
     repoURL: https://charts.bitnami.com/bitnami
-    chart: fluentd
-    targetRevision: 7.1.9
+    chart: fluent-bit
+    targetRevision: 3.1.5
     helm:
       values: |
-        forwarder:
+        daemonset:
           enabled: true
-          tolerations:
-            - operator: "Exists"
+          podTolerations:
             - key: "kubernetes.azure.com/scalesetpriority"
-              operator: "Equal"
-              value: "spot"
-              effect: "NoSchedule"
-
-        input:
-          tail:
-            enabled: true
-            path: "/var/log/containers/*.log"
-            tag: "kubernetes.*"
-            format: none
-            multiline: false
-
-        output:
-          elasticsearch:
-            enabled: true
-            host: elasticsearch.elasticsearch.svc.cluster.local
-            port: 9200
-            scheme: http
-            logstashPrefix: kubernetes
-            logstashFormat: true
+              operator: Equal
+              value: spot
+              effect: NoSchedule
+            - operator: Exists
 
         rbac:
           create: true
 
         serviceAccount:
           create: true
+
+        input:
+          tail:
+            enabled: true
+            path: /var/log/containers/*.log
+            parser: docker
+            multiline: off
+            tag: kube.*
+
+        filters:
+          kubernetes:
+            enabled: true
+            match: kube.*
+
+        output:
+          es:
+            enabled: true
+            host: elasticsearch.elasticsearch.svc.cluster.local
+            port: 9200
+            tls: false
+            logstashPrefix: kubernetes
+            replaceDots: true
+            type: _doc
+            match: kube.*
+
+        extraVolumeMounts:
+          - name: varlog
+            mountPath: /var/log
+          - name: varlibdockercontainers
+            mountPath: /var/lib/docker/containers
+            readOnly: true
+
+        extraVolumes:
+          - name: varlog
+            hostPath:
+              path: /var/log
+          - name: varlibdockercontainers
+            hostPath:
+              path: /var/lib/docker/containers
 
