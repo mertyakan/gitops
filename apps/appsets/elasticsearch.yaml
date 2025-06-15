@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/mertyakan/gitops
-    revision: HEAD
+    targetRevision: 3.0.0
     chart: eck-stack
     helm:
       valueFiles:
