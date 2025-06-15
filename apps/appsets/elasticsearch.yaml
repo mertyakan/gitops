@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/mertyakan/gitops
     path: charts/eck-stack
-    targetRevision: 0.15.0
+    targetRevision: HEAD
     helm:
       valueFiles:
         - values/elasticsearch-values.yaml
