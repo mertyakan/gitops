@@ -1,0 +1,30 @@
+replicaCount: 1
+
+elasticsearch:
+  hosts:
+    - http://elasticsearch-master.elastic.svc.cluster.local:9200
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: kibana.mertyakan.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - kibana.mertyakan.com
+      secretName: kibana-mertyakan-com-tls
+
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m
+  limits:
+    memory: 512Mi
+    cpu: 500m
+

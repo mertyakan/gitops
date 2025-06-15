@@ -1,66 +1,25 @@
-eck-elasticsearch:
-  enabled: true
-  elasticsearch:
-    metadata:
-      name: elasticsearch
-    spec:
-      version: 8.13.4
-      nodeSets:
-        - name: masters
-          count: 3
-          config:
-            node.roles: ["master"]
-        - name: data
-          count: 3
-          config:
-            node.roles: ["data"]
-        - name: ingest
-          count: 1
-          config:
-            node.roles: ["ingest"]
-      http:
-        tls:
-          selfSignedCertificate:
-            disabled: true
+replicas: 3
 
-eck-kibana:
-  enabled: true
-  kibana:
-    metadata:
-      name: kibana
-    spec:
-      version: 8.13.4
-      count: 1
-      elasticsearchRef:
-        name: elasticsearch
-      config:
-        server.publicBaseUrl: "https://kibana.mertyakan.com"
-      http:
-        tls:
-          selfSignedCertificate:
-            disabled: true
-      ingress:
-        enabled: true
-        className: nginx
-        hosts:
-          - host: kibana.mertyakan.com
-            paths:
-              - path: /
-                pathType: ImplementationSpecific
-        tls:
-          - hosts:
-              - kibana.mertyakan.com
-            secretName: kibana-mertyakan-com-tls
+esConfig:
+  elasticsearch.yml: |
+    xpack.security.enabled: true
+    xpack.security.authc.api_key.enabled: true
+    xpack.monitoring.collection.enabled: true
 
-eck-agent:
-  enabled: false
+resources:
+  requests:
+    cpu: "100m"
+    memory: "1Gi"
+  limits:
+    cpu: "1"
+    memory: "2Gi"
 
-eck-fleet-server:
-  enabled: false
+volumeClaimTemplate:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 10Gi
 
-eck-logstash:
-  enabled: false
-
-eck-apm-server:
-  enabled: false
+service:
+  type: ClusterIP
 
