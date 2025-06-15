@@ -6,6 +6,10 @@ esConfig:
     xpack.security.authc.api_key.enabled: true
     xpack.monitoring.collection.enabled: true
 
+secret:
+  password: "supersecretpassword"
+
+
 resources:
   requests:
     cpu: "10m"
