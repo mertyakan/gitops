@@ -1,29 +1,23 @@
-eck-kibana:
+version: 9.0.0
+count: 1
+config:
+  server.publicBaseUrl: https://kibana.mertyakan.com
+elasticsearchRef:
+  name: elasticsearch
+http:
+  tls:
+    selfSignedCertificate:
+      disabled: true
+ingress:
   enabled: true
-  kibana:
-    metadata:
-      name: kibana
-    spec:
-      version: 8.13.4
-      count: 1
-      config:
-        server.publicBaseUrl: https://kibana.mertyakan.com
-      elasticsearchRef:
-        name: elasticsearch
-      http:
-        tls:
-          selfSignedCertificate:
-            disabled: true
-      ingress:
-        enabled: true
-        className: nginx
-        hosts:
-          - host: kibana.mertyakan.com
-            paths:
-              - path: /
-                pathType: ImplementationSpecific
-        tls:
-          - hosts:
-              - kibana.mertyakan.com
-            secretName: kibana-mertyakan-com-tls
+  className: nginx
+  hosts:
+    - host: kibana.mertyakan.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - kibana.mertyakan.com
+      secretName: kibana-mertyakan-com-tls
 
