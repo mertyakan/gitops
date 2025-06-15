@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/mertyakan/gitops
     targetRevision: HEAD
-    chart: elastic-stack
+    chart: eck-stack
     helm:
       valueFiles:
         - ../../values/elasticsearch-values.yaml
