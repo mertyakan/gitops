@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://helm.elastic.co
-    chart: elasticsearch
-    targetRevision: 8.5.1
+    repoURL: https://github.com/mertyakan/gitops
+    path: apps/appsets/elastic.yaml
+    targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
     namespace: elastic
