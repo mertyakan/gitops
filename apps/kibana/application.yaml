@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kibana
+  namespace: argocd
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kibana
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: kibana
+    targetRevision: 10.2.0
+    helm:
+      values: |
+        elasticsearch:
+          hosts:
+            - elasticsearch.elasticsearch.svc.cluster.local
+          port: 9200
+
+        persistence:
+          existingClaim: kibana
+          enabled: true
+          storageClass: "default"
+
+        server:
+          publicBaseUrl: "https://kibana.mertyakan.com"
+
+        ingress:
+          enabled: true
+          hostname: kibana.mertyakan.com
+          path: /
+          tls: true
+          selfSigned: false
+          annotations:
+            kubernetes.io/ingress.class: nginx
+            cert-manager.io/cluster-issuer: letsencrypt-prod
+            nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+        service:
+          type: ClusterIP
+
+        replicaCount: 1
+

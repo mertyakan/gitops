@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fluentd
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: logging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: fluentd
+    targetRevision: 7.1.9
+    helm:
+      values: |
+        forwarder:
+          enabled: true
+          tolerations:
+            - operator: "Exists"
+            - key: "kubernetes.azure.com/scalesetpriority"
+              operator: "Equal"
+              value: "spot"
+              effect: "NoSchedule"
+
+        input:
+          tail:
+            enabled: true
+            path: "/var/log/containers/*.log"
+            tag: "kubernetes.*"
+            format: none
+            multiline: false
+
+        output:
+          elasticsearch:
+            enabled: true
+            host: elasticsearch.elasticsearch.svc.cluster.local
+            port: 9200
+            scheme: http
+            logstashPrefix: kubernetes
+            logstashFormat: true
+
+        rbac:
+          create: true
+
+        serviceAccount:
+          create: true
+
