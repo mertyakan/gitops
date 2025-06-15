@@ -1,0 +1,34 @@
+elasticsearch:
+  enabled: true
+  replicas: 3
+  roles:
+    master:
+      replicas: 3
+    data:
+      replicas: 3
+    ingest:
+      replicas: 3
+  volumeClaimTemplate:
+    accessModes: ["ReadWriteOnce"]
+    resources:
+      requests:
+        storage: 30Gi
+
+kibana:
+  enabled: true
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: kibana.mertyakan.com
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - kibana.mertyakan.com
+        secretName: kibana-mertyakan-com-tls
+

@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: elasticsearch
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/mertyakan/gitops
+    targetRevision: HEAD
+    chart: elastic-stack
+    helm:
+      valueFiles:
+        - ../../values/elasticsearch-values.yaml
+    repoURL: https://helm.elastic.co
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: elastic-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
