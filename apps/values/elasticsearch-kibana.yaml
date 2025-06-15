@@ -8,7 +8,8 @@ elasticsearch:
     username: "elastic"
     password: "supersecretpassword"
 
-
+nodeSelector:
+  kubernetes.azure.com/scalesetpriority: spot
 
 ingress:
   enabled: true
