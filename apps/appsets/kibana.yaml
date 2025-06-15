@@ -11,14 +11,14 @@ spec:
     targetRevision: 8.5.1
     helm:
       valueFiles:
-        - apps/values/kibana-values.yaml
+        - apps/values/elasticsearch-kibana.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: elastic
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    #automated:
+    #  prune: true
+    #  selfHeal: true
     syncOptions:
       - CreateNamespace=true
 
