@@ -8,6 +8,7 @@ esConfig:
 
 resources:
   requests:
+    cpu: "10m"
     memory: "1Gi"
   limits:
     cpu: "1"
