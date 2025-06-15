@@ -7,8 +7,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://helm.elastic.co
-    chart: eck-stack
+    repoURL: https://github.com/mertyakan/gitops
+    path: charts/eck-stack
     targetRevision: 0.15.0
     helm:
       valueFiles:
