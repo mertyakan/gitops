@@ -1,0 +1,27 @@
+replicaCount: 3
+
+roles:
+  master: "true"
+  data: "true"
+  ingest: "true"
+
+minimumMasterNodes: 2
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "512Mi"
+  limits:
+    cpu: "1"
+    memory: "1Gi"
+
+persistence:
+  enabled: true
+  size: 8Gi
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: false
+

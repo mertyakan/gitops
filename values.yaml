@@ -1,0 +1,7 @@
+eck-kibana:
+  enabled: true
+  ingress:
+    enabled: true
+    hosts:
+      - host: kibana.example.com
+        path: /

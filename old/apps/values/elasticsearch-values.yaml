@@ -1,0 +1,29 @@
+replicas: 3
+
+esConfig:
+  elasticsearch.yml: |
+    xpack.security.enabled: false
+    xpack.security.authc.api_key.enabled: false
+    xpack.monitoring.collection.enabled: true
+
+secret:
+  enabled: false
+  password: "supersecretpassword"
+
+
+resources:
+  requests:
+    cpu: "10m"
+    memory: "1Gi"
+  limits:
+    memory: "2Gi"
+
+volumeClaimTemplate:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 10Gi
+
+service:
+  type: ClusterIP
+

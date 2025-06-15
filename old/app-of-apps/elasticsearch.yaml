@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: elasticsearch-app-of-appset
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/mertyakan/gitops
+    path: ./apps/appsets/elastic.yaml
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: elastic
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+
