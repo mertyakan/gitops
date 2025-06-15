@@ -1,34 +1,54 @@
-elasticsearch:
+eck-elasticsearch:
   enabled: true
-  replicas: 3
-  roles:
-    master:
-      replicas: 3
-    data:
-      replicas: 3
-    ingest:
-      replicas: 3
-  volumeClaimTemplate:
-    accessModes: ["ReadWriteOnce"]
-    resources:
-      requests:
-        storage: 30Gi
+  elasticsearch:
+    version: 8.13.4
+    nodeSets:
+      - name: master-nodes
+        count: 3
+        config:
+          node.roles: ["master"]
+      - name: data-nodes
+        count: 3
+        config:
+          node.roles: ["data"]
+      - name: ingest-nodes
+        count: 3
+        config:
+          node.roles: ["ingest"]
 
-kibana:
+eck-kibana:
   enabled: true
-  ingress:
-    enabled: true
-    className: "nginx"
-    annotations:
-      kubernetes.io/ingress.class: nginx
-      cert-manager.io/cluster-issuer: letsencrypt-prod
-    hosts:
-      - host: kibana.mertyakan.com
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls:
-      - hosts:
-          - kibana.mertyakan.com
-        secretName: kibana-mertyakan-com-tls
+  kibana:
+    version: 8.13.4
+    count: 1
+    config:
+      server.publicBaseUrl: "https://kibana.mertyakan.com"
+    http:
+      tls:
+        selfSignedCertificate:
+          disabled: true
+    ingress:
+      enabled: true
+      className: nginx
+      hosts:
+        - host: kibana.mertyakan.com
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - hosts:
+            - kibana.mertyakan.com
+          secretName: kibana-mertyakan-com-tls
+
+eck-agent:
+  enabled: false
+
+eck-fleet-server:
+  enabled: false
+
+eck-logstash:
+  enabled: false
+
+eck-apm-server:
+  enabled: false
 
