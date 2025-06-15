@@ -15,7 +15,7 @@ spec:
     repoURL: https://helm.elastic.co
   destination:
     server: https://kubernetes.default.svc
-    namespace: elastic-system
+    namespace: elastic
   syncPolicy:
     automated:
       prune: true
