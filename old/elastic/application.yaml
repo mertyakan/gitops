@@ -1,0 +1,79 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: elasticsearch
+  namespace: argocd
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: elasticsearch
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: elasticsearch
+    targetRevision: 19.9.1
+    helm:
+      values: |
+        nodeSelector:
+          kubernetes.azure.com/scalesetpriority: spot
+
+        tolerations:
+          - key: "kubernetes.azure.com/scalesetpriority"
+            operator: "Equal"
+            value: "spot"
+            effect: "NoSchedule"
+
+        master:
+          replicaCount: 3
+          nodeSelector:
+            kubernetes.azure.com/scalesetpriority: spot
+          tolerations:
+            - key: "kubernetes.azure.com/scalesetpriority"
+              operator: "Equal"
+              value: "spot"
+              effect: "NoSchedule"
+
+        coordinating:
+          enabled: true
+          replicaCount: 3
+          nodeSelector:
+            kubernetes.azure.com/scalesetpriority: spot
+          tolerations:
+            - key: "kubernetes.azure.com/scalesetpriority"
+              operator: "Equal"
+              value: "spot"
+              effect: "NoSchedule"
+
+        data:
+          replicaCount: 3
+          nodeSelector:
+            kubernetes.azure.com/scalesetpriority: spot
+          tolerations:
+            - key: "kubernetes.azure.com/scalesetpriority"
+              operator: "Equal"
+              value: "spot"
+              effect: "NoSchedule"
+
+        ingest:
+          enabled: true
+          nodeSelector:
+            kubernetes.azure.com/scalesetpriority: spot
+          tolerations:
+            - key: "kubernetes.azure.com/scalesetpriority"
+              operator: "Equal"
+              value: "spot"
+              effect: "NoSchedule"
+
+
+        volumePermissions:
+          enabled: true
+
+        persistence:
+          enabled: true
+          size: 10Gi

@@ -1,0 +1,62 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: logstash
+  namespace: argocd
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: logging
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: logstash
+    targetRevision: 7.0.4
+    helm:
+      values: |
+        replicaCount: 1
+
+        logstashPipeline:
+          customPipelines:
+            - name: main
+              content: |
+                input {
+                  file {
+                    path => "/var/log/containers/*.log"
+                    start_position => "beginning"
+                    sincedb_path => "/tmp/sincedb"
+                    codec => "json"
+                  }
+                }
+
+                output {
+                  elasticsearch {
+                    hosts => ["http://elasticsearch.elasticsearch.svc.cluster.local:9200"]
+                    index => "logstash-%{+YYYY.MM.dd}"
+                  }
+                  stdout { codec => rubydebug }
+                }
+
+        podSecurityContext:
+          fsGroup: 1000
+
+        containerSecurityContext:
+          runAsUser: 1000
+          runAsNonRoot: true
+
+        tolerations:
+          - key: "kubernetes.azure.com/scalesetpriority"
+            operator: "Equal"
+            value: "spot"
+            effect: "NoSchedule"
+          - operator: "Exists"
+
+        nodeSelector:
+          kubernetes.azure.com/scalesetpriority: spot
+
