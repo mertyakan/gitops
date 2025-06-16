@@ -26,9 +26,9 @@ spec:
             cpu: "1"
             memory: "2Gi"
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    #automated:
+    #  prune: true
+    #  selfHeal: true
     syncOptions:
       - CreateNamespace=true
 

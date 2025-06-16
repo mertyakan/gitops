@@ -18,6 +18,11 @@ spec:
         nodeGroup: "master"
         roles: 
           - master
+        tolerations:
+          - key: "kubernetes.azure.com/scalesetpriority"
+            operator: "Equal"
+            value: "spot"
+            effect: "NoSchedule"
         resources:
           requests:
             cpu: "100m"
@@ -31,9 +36,9 @@ spec:
             requests:
               storage: 30Gi
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    #automated:
+    #  prune: true
+    #  selfHeal: true
     syncOptions:
       - CreateNamespace=true
 
