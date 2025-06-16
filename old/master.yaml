@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: es-master
+  namespace: argocd
+spec:
+  destination:
+    namespace: elastic-system
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    repoURL: https://helm.elastic.co
+    chart: elasticsearch
+    targetRevision: 8.5.1
+    helm:
+      values: |
+        replicas: 3
+        nodeGroup: master
+        roles:
+          - master
+        clusterName: elasticsearch
+        masterService: elasticsearch-master-headless
+        esConfig:
+          elasticsearch.yml: |
+            xpack.security.enabled: false
+            xpack.security.transport.ssl.enabled: false
+            discovery.seed_hosts: ["elasticsearch-master-headless"]
+            cluster.initial_master_nodes: ["elasticsearch-master-0","elasticsearch-master-1","elasticsearch-master-2"]
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "1Gi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+        volumeClaimTemplate:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 30Gi
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+

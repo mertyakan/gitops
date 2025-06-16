@@ -1,0 +1,11 @@
+project: default
+source:
+  repoURL: 'https://github.com/mertyakan/gitops'
+  path: apps/efk/values/
+  targetRevision: HEAD
+destination:
+  server: 'https://kubernetes.default.svc'
+  namespace: kube-logging
+syncPolicy:
+  syncOptions:
+    - CreateNamespace=true
