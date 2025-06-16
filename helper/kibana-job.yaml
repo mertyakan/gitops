@@ -1,0 +1,4 @@
+elasticsearch@elasticsearch-master-0:~$ bin/elasticsearch-service-tokens create elastic/kibana kibana-token
+SERVICE_TOKEN elastic/kibana/kibana-token = AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjp0S1RHX2dqQVJkU1NDZlF5MV9zNXF3
+
+

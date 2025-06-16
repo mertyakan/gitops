@@ -1,0 +1,20 @@
+clusterName: "elasticsearch"
+nodeGroup: "data"
+roles: ["data", "data_hot"]
+
+replicas: 3
+createCert: false
+masterService: "elasticsearch-master"
+
+secretMounts:
+  - name: elasticsearch-certs
+    secretName: elasticsearch-master-certs
+    path: /usr/share/elasticsearch/config/certs
+    defaultMode: 0755
+
+volumeClaimTemplate:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 20Gi
+

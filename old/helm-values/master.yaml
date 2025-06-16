@@ -1,0 +1,15 @@
+clusterName: "elasticsearch"
+nodeGroup: "master"
+roles: ["master"]
+
+replicas: 3
+minimumMasterNodes: 2
+
+createCert: true
+
+volumeClaimTemplate:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 10Gi
+
