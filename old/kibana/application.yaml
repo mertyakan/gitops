@@ -4,48 +4,38 @@ metadata:
   name: kibana
   namespace: argocd
 spec:
+  project: default
+
+  source:
+    repoURL: https://helm.elastic.co
+    chart: kibana
+    targetRevision: 8.5.1
+    helm:
+      releaseName: kibana
+      values: |
+        fullnameOverride: kibana
+        elasticsearchURL: "https://elasticsearch-master:9200"
+        ingress:
+          enabled: true
+          className: nginx
+          hosts:
+            - host: kibana.mertyakan.com
+              paths:
+                - path: /
+                  pathType: ImplementationSpecific
+          tls:
+            - hosts:
+                - kibana.mertyakan.com
+              secretName: kibana-tls
+
   destination:
     server: https://kubernetes.default.svc
-    namespace: kibana
-  project: default
+    namespace: elasticsearch
+
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-  source:
-    repoURL: https://charts.bitnami.com/bitnami
-    chart: kibana
-    targetRevision: 10.2.0
-    helm:
-      values: |
-        elasticsearch:
-          hosts:
-            - elasticsearch.elasticsearch.svc.cluster.local
-          port: 9200
-
-        persistence:
-          existingClaim: kibana
-          enabled: true
-          storageClass: "default"
-
-        server:
-          publicBaseUrl: "https://kibana.mertyakan.com"
-
-        ingress:
-          enabled: true
-          hostname: kibana.mertyakan.com
-          path: /
-          tls: true
-          selfSigned: false
-          annotations:
-            kubernetes.io/ingress.class: nginx
-            cert-manager.io/cluster-issuer: letsencrypt-prod
-            nginx.ingress.kubernetes.io/ssl-redirect: "true"
-
-        service:
-          type: ClusterIP
-
-        replicaCount: 1
 
