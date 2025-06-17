@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webhook-test
+  namespace: webhook-test
+  labels:
+    app: webhook-test
+spec:
+  containers:
+    - image: docker.elastic.co/demos/apm/k8s-webhook-test
+      imagePullPolicy: Always
+      name: webhook-test
+
