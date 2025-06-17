@@ -14,3 +14,4 @@ spec:
     service:
       spec:
         type: NodePort
+

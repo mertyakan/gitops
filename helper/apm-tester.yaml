@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: podinfo
+  name: podinfo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: podinfo
+  template:
+    metadata:
+      labels:
+        app: podinfo
+    spec:
+      containers:
+        - name: podinfo
+          image: ghcr.io/stefanprodan/podinfo:6.5.3
+          ports:
+            - containerPort: 9898
+          env:
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "https://apm-server-apm-http.default.svc:8200"
+            - name: OTEL_EXPORTER_OTLP_HEADERS
+              value: "Authorization=Bearer 1Gnz2hDG49MHnK1166QYr08I"
+            - name: OTEL_SERVICE_NAME
+              value: podinfo
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "deployment.environment=demo"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: podinfo
+  name: podinfo
+spec:
+  selector:
+    app: podinfo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9898
+

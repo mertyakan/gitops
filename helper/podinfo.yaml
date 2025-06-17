@@ -1,0 +1,28 @@
+replicaCount: 1
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: podinfo.mertyakan.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - podinfo.mertyakan.com
+      secretName: podinfo-tls
+
+extraEnvs:
+  - name: OTEL_EXPORTER_OTLP_ENDPOINT
+    value: https://apm.mertyakan.com
+  - name: OTEL_EXPORTER_OTLP_HEADERS
+    value: Authorization=Bearer 1Gnz2hDG49MHnK1166QYr08I
+  - name: OTEL_RESOURCE_ATTRIBUTES
+    value: service.name=podinfo
+
+podAnnotations: {}
+
+podSecurityContext: {}
+securityContext: {}
+
