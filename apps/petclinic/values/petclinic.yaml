@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic-apm
+  labels:
+    app: petclinic-apm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petclinic-apm
+  template:
+    metadata:
+      labels:
+        app: petclinic-apm
+    spec:
+      containers:
+        - name: petclinic-apm
+          image: mertyakan/petclinic-apm:latest
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petclinic-apm
+spec:
+  selector:
+    app: petclinic-apm
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: petclinic-apm
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: petclinic.mertyakan.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: petclinic-apm
+                port:
+                  number: 80
+
